@@ -1,0 +1,21 @@
+{
+    "name": "project/api",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Project\\Api\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Mikhail1JS",
+            "email": "misha.zaichko@gmail.com"
+        }
+    ],
+    "require-dev": {
+        "fakerphp/faker": "^1.20"
+    },
+    "require": {
+        "roave/security-advisories": "dev-latest"
+    }
+}
