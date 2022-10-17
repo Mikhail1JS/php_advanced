@@ -1,8 +1,7 @@
 <?php
 
-namespace Project\Api\Post;
+namespace Project\Api\Blog;
 
-use Project\Api\Person\User;
 
 class Post
 {
@@ -24,7 +23,7 @@ class Post
 
     public function __toString():string
     {
-        return "User with id {$this->getAuthorId()} wrote post \n: id - {$this->getId()};\n title-{$this->getTitle()};\n text-{$this->getText()} ";
+        return "User with id {$this->getAuthorId()} wrote post:\n id - {$this->getId()};\n title-{$this->getTitle()};\n text-{$this->getText()} ";
     }
 
     /**

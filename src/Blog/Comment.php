@@ -1,8 +1,6 @@
 <?php
 
-namespace Project\Api\Post;
-
-use Project\Api\Person\User;
+namespace Project\Api\Blog;
 
 class Comment
 {
