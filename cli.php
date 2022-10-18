@@ -1,9 +1,13 @@
 <?php
 
+use Project\Api\Blog\Commands\Arguments;
+use Project\Api\Blog\Commands\CreateUserCommand;
+use Project\Api\Blog\Exceptions\ArgumentsException;
+use Project\Api\Blog\Exceptions\CommandException;
 use Project\Api\Blog\User;
 use Project\Api\Blog\UUID;
 use Project\Api\Person\Name;
-use Project\Api\Repositories\UsersRepositories\SqlLiteUsersRepository;
+use Project\Api\Blog\Repositories\UsersRepositories\SqlLiteUsersRepository;
 
 require __DIR__ . '/vendor/autoload.php';
 
@@ -25,12 +29,14 @@ $faker = Faker\Factory::create('en_US');
 $connection = new PDO('sqlite:'.__DIR__.'/blog.sqlite');
 
 $usersRepository = new SqlLiteUsersRepository($connection);
+$commandWatcher = new CreateUserCommand($usersRepository);
+
 $name = new Name ($faker->firstName(),$faker->lastName());
 $user = new User (UUID::random(), $faker->userName(), $name);
 
 try {
-   echo $usersRepository->get(new UUID ('b71599ea-dc26-458c-b850-9dac071edb93'));
-} catch (Exception $e) {
+  $commandWatcher->handle(Arguments::fromArgv($argv));
+} catch (CommandException|ArgumentsException $e) {
    echo $e->getMessage();
 }
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Project\Api\Exceptions;
+namespace Project\Api\Blog\Exceptions;
 
 class UserNotFoundException extends AppException
 {

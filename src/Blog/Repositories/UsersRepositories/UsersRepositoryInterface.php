@@ -1,6 +1,6 @@
 <?php
 
-namespace Project\Api\Repositories\UsersRepositories;
+namespace Project\Api\Blog\Repositories\UsersRepositories;
 
 use Project\Api\Blog\User;
 use Project\Api\Blog\UUID;

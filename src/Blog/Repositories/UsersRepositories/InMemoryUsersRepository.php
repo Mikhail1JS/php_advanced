@@ -1,9 +1,9 @@
 <?php
 
-namespace Project\Api\Repositories\UsersRepositories;
+namespace Project\Api\Blog\Repositories\UsersRepositories;
 
 use Project\Api\Blog\UUID;
-use Project\Api\Exceptions\UserNotFoundException;
+use Project\Api\Blog\Exceptions\UserNotFoundException;
 use Project\Api\Blog\User;
 
 class InMemoryUsersRepository implements UsersRepositoryInterface

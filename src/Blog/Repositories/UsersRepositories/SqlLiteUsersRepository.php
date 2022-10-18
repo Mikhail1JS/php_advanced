@@ -1,11 +1,13 @@
 <?php
 
-namespace Project\Api\Repositories\UsersRepositories;
+namespace Project\Api\Blog\Repositories\UsersRepositories;
 
 use PDO;
+use PDOStatement;
+use Project\Api\Blog\Exceptions\InvalidArgumentException;
+use Project\Api\Blog\Exceptions\UserNotFoundException;
 use Project\Api\Blog\User;
 use Project\Api\Blog\UUID;
-use Project\Api\Exceptions\UserNotFoundException;
 use Project\Api\Person\Name;
 
 class SqlLiteUsersRepository implements UsersRepositoryInterface
@@ -29,10 +31,12 @@ class SqlLiteUsersRepository implements UsersRepositoryInterface
         ]);
     }
 
+
     /**
+     * @throws InvalidArgumentException
      * @throws UserNotFoundException
      */
-    public function get(UUID $uuid){
+    public function get(UUID $uuid): User{
         $statement = $this->connection->prepare(
             'SELECT * FROM users WHERE uuid = :uuid '
         );
@@ -40,12 +44,35 @@ class SqlLiteUsersRepository implements UsersRepositoryInterface
         $statement->execute([
             ':uuid'=> $uuid
         ]);
+        return $this->getUser($statement,$uuid);
+    }
 
+    /**
+     * @throws UserNotFoundException|InvalidArgumentException
+     */
+    public function getByUsername(string $username): User
+    {
+        $statement = $this->connection->prepare(
+            'SELECT * FROM users WHERE username = :username');
+
+        $statement->execute([
+            ':username'=>$username
+        ]);
+
+        return $this->getUser($statement,$username);
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     * @throws UserNotFoundException
+     */
+    private function getUser(PDOStatement $statement, $value): User
+    {
         $result = $statement->fetch(PDO::FETCH_ASSOC);
 
         if($result === false){
             throw new UserNotFoundException(
-                "Cannot get user: $uuid"
+                "Cannot get user: $value"
             );
         }
 
