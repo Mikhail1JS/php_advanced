@@ -2,6 +2,8 @@
 
 namespace Project\Api\Blog;
 
+use Project\Api\Exceptions\InvalidArgumentException;
+
 class UUID
 {
     public function __construct(

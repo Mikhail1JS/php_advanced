@@ -28,7 +28,11 @@ $usersRepository = new SqlLiteUsersRepository($connection);
 $name = new Name ($faker->firstName(),$faker->lastName());
 $user = new User (UUID::random(), $faker->userName(), $name);
 
-$usersRepository->save($user);
+try {
+   echo $usersRepository->get(new UUID ('b71599ea-dc26-458c-b850-9dac071edb93'));
+} catch (Exception $e) {
+   echo $e->getMessage();
+}
 
 
 //if ($argv[1] === 'user') {

@@ -2,10 +2,11 @@
 
 namespace Project\Api\Repositories\UsersRepositories;
 
+use Project\Api\Blog\UUID;
 use Project\Api\Exceptions\UserNotFoundException;
-use Project\Api\Post\User;
+use Project\Api\Blog\User;
 
-class InMemoryUsersRepository
+class InMemoryUsersRepository implements UsersRepositoryInterface
 {
     private array $users = [];
 
