@@ -56,15 +56,15 @@ class Comment
 
 
     /**
-     * @return int
+     * @return UUID
      */
-    public function getAuthorUuid(): int
+    public function getAuthorUuid(): string
     {
         return $this->authorUuid->uuid();
     }
 
 
-    public function getPostUuid(): int
+    public function getPostUuid(): string
     {
         return $this->postUuid->uuid();
     }

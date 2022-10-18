@@ -10,7 +10,7 @@ use Project\Api\Blog\User;
 use Project\Api\Blog\UUID;
 use Project\Api\Person\Name;
 
-class SqlLiteUsersRepository implements UsersRepositoryInterface
+class SqliteUsersRepository implements UsersRepositoryInterface
 {
     public function __construct(
         private PDO $connection
