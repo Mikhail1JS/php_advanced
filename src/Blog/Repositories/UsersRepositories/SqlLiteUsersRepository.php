@@ -33,7 +33,6 @@ class SqlLiteUsersRepository implements UsersRepositoryInterface
 
 
     /**
-     * @throws InvalidArgumentException
      * @throws UserNotFoundException
      */
     public function get(UUID $uuid): User{
@@ -48,7 +47,7 @@ class SqlLiteUsersRepository implements UsersRepositoryInterface
     }
 
     /**
-     * @throws UserNotFoundException|InvalidArgumentException
+     * @throws UserNotFoundException
      */
     public function getByUsername(string $username): User
     {
@@ -63,7 +62,6 @@ class SqlLiteUsersRepository implements UsersRepositoryInterface
     }
 
     /**
-     * @throws InvalidArgumentException
      * @throws UserNotFoundException
      */
     private function getUser(PDOStatement $statement, $value): User

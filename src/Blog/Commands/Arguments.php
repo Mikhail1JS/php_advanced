@@ -3,11 +3,15 @@
 namespace Project\Api\Blog\Commands;
 
 use Project\Api\Blog\Exceptions\ArgumentsException;
+use Project\Api\Blog\Exceptions\CommandException;
 
 class Arguments
 {
     private array $arguments = [];
 
+    /**
+     * @throws ArgumentsException
+     */
     public function __construct(
         iterable $argvArray
     ){
@@ -17,7 +21,6 @@ class Arguments
             if(empty($stringValue)){
                 continue;
             }
-
             $this->arguments[(string)$argument] = $stringValue;
         }
 

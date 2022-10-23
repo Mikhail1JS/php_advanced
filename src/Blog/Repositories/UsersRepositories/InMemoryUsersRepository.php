@@ -32,7 +32,7 @@ class InMemoryUsersRepository implements UsersRepositoryInterface
     /**
      * @throws UserNotFoundException
      */
-    public function getByUsername(string $username): User
+    public function getByUsername(string $username ): User
     {
         foreach ($this->users as $user) {
             if ($user->username() === $username) {

@@ -36,7 +36,7 @@ class CreateUserCommand
         $this->usersRepository->save(new User(
             UUID::random(),
             $username,
-            new Name($arguments['first_name'], $arguments['last_name'])));
+            new Name($arguments->get('first_name'), $arguments->get('last_name'))));
     }
 
 

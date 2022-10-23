@@ -34,11 +34,7 @@ $commandWatcher = new CreateUserCommand($usersRepository);
 $name = new Name ($faker->firstName(),$faker->lastName());
 $user = new User (UUID::random(), $faker->userName(), $name);
 
-try {
-  $commandWatcher->handle(Arguments::fromArgv($argv));
-} catch (CommandException|ArgumentsException $e) {
-   echo $e->getMessage();
-}
+print_r($argv);
 
 
 //if ($argv[1] === 'user') {
