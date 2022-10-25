@@ -37,7 +37,7 @@ class User
     }
 
     /**
-     * @return int
+     * @return string
      */
     public function uuid(): string
     {

@@ -25,8 +25,6 @@ class CreateUserCommand
      */
     public function handle(Arguments $arguments): void
     {
-
-
         $username = $arguments->get('username');
 
         if ($this->userExists($username)) {

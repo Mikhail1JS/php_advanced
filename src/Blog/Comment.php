@@ -6,16 +6,16 @@ class Comment
 {
 
     /**
-     * @param int $id
-     * @param User $authorId
-     * @param Post $postId
+     * @param UUID $uuid
+     * @param User $authorUuid
+     * @param Post $postUuid
      * @param string $text
      */
     public function __construct
     (
-        private int $id,
-        private User $authorId,
-        private Post $postId,
+        private UUID $uuid,
+        private User $authorUuid,
+        private Post $postUuid,
         private string $text
     )
     {
@@ -25,25 +25,18 @@ class Comment
     }
 
     public function __toString():string{
-        return "Comment with id {$this->getId()} :\n Author id : {$this->getAuthorId()};\n To post : {$this->getPostId()};\n Text : {$this->getText()}";
+        return "Comment with id {$this->uuid()} :\n Author id : {$this->getAuthorUuid()};\n To post : {$this->getPostUuid()};\n Text : {$this->getText()}";
 
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getId(): int
+    public function uuid(): string
     {
-        return $this->id;
+        return $this->uuid;
     }
 
-    /**
-     * @param int $id
-     */
-    public function setId(int $id): void
-    {
-        $this->id = $id;
-    }
 
     /**
      * @return string
@@ -63,16 +56,16 @@ class Comment
 
 
     /**
-     * @return int
+     * @return UUID
      */
-    public function getAuthorId(): int
+    public function getAuthorUuid(): string
     {
-        return $this->authorId->getId();
+        return $this->authorUuid->uuid();
     }
 
 
-    public function getPostId(): int
+    public function getPostUuid(): string
     {
-        return $this->postId->getId();
+        return $this->postUuid->uuid();
     }
 }
