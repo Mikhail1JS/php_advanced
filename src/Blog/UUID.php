@@ -2,10 +2,13 @@
 
 namespace Project\Api\Blog;
 
-use Project\Api\Exceptions\InvalidArgumentException;
+use Project\Api\Blog\Exceptions\InvalidArgumentException;
 
 class UUID
 {
+    /**
+     * @throws InvalidArgumentException
+     */
     public function __construct(
         private string $uuidString
     )
