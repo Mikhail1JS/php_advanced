@@ -2,7 +2,7 @@
 
 namespace Project\Api\Blog;
 
-use Project\Api\Exceptions\InvalidArgumentException;
+use Project\Api\Blog\Exceptions\InvalidArgumentException;
 
 class UUID
 {

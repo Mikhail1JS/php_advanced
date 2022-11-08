@@ -19,7 +19,8 @@
     "require": {
         "roave/security-advisories": "dev-latest",
         "symfony/polyfill-uuid": "^1.26",
-        "ext-pdo": "*"
+        "ext-pdo": "*",
+        "ext-mbstring": "*"
     },
     "scripts": {
         "test": "phpunit tests --testdox --colors"

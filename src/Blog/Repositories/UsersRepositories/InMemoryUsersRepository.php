@@ -8,7 +8,7 @@ use Project\Api\Blog\User;
 
 class InMemoryUsersRepository implements UsersRepositoryInterface
 {
-    private array $users = [];
+    public array $users = [];
 
     public function save(User $user): void
     {

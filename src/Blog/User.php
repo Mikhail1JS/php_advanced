@@ -14,7 +14,7 @@ class User
     public function __construct
     (
         private UUID $uuid,
-        private string $userName,
+        private string $username,
         private Name $name,
     ){ }
 
@@ -73,9 +73,9 @@ class User
     /**
      * @return string
      */
-    public function getUserName(): string
+    public function username(): string
     {
-        return $this->userName;
+        return $this->username;
     }
 
     /**
@@ -83,8 +83,12 @@ class User
      */
     public function setUserName(string $userName): void
     {
-        $this->userName = $userName;
+        $this->username = $userName;
     }
 
+
+    public function name(): string {
+       return $this->name;
+    }
 
 }
