@@ -43,13 +43,17 @@ $post = new Post (UUID::random(), $user, $faker->sentence(),$faker->paragraph())
 $comment = new Comment(UUID::random(),$user,$post,$faker->text());
 
 
-print_r($argv);
 
-try {
- echo $commentsRepository->get(new UUID("47653ee5-94fa-482d-9301-8b3e76def3bd"));
-} catch (Exception $e) {
-   echo $e->getMessage();
-}
+
+
+
+//try {
+// echo $commentsRepository->get(new UUID("47653ee5-94fa-482d-9301-8b3e76def3bd"));
+//} catch (Exception $e) {
+//   echo $e->getMessage();
+//}
+
+
 
 
 //if ($argv[1] === 'user') {

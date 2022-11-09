@@ -6,6 +6,9 @@ use Project\Api\Blog\Exceptions\InvalidArgumentException;
 
 class UUID
 {
+    /**
+     * @throws InvalidArgumentException
+     */
     public function __construct(
         private string $uuidString
     )

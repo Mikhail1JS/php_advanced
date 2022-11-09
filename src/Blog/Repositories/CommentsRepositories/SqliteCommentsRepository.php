@@ -67,7 +67,7 @@ class SqliteCommentsRepository implements CommentsRepositoriesInterface
 
         if($result === false){
             throw new CommentNotFoundException(
-                "Cannot get comment: $value"
+                "Cannot find comment: $value"
             );
         }
 
