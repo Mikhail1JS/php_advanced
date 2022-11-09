@@ -4,6 +4,7 @@ namespace Project\Api\Blog\Repositories\UsersRepositories;
 
 use PDO;
 use PDOStatement;
+use Project\Api\Blog\Exceptions\AlreadyRegisteredException;
 use Project\Api\Blog\Exceptions\InvalidArgumentException;
 use Project\Api\Blog\Exceptions\UserNotFoundException;
 use Project\Api\Blog\User;
@@ -17,18 +18,25 @@ class SqliteUsersRepository implements UsersRepositoryInterface
     )
     {}
 
+    /**
+     * @throws AlreadyRegisteredException
+     */
     public function save(User $user):void{
 
         $statement = $this->connection->prepare(
             'INSERT INTO users (uuid , username , first_name , last_name) VALUES (:uuid , :username , :first_name , :last_name)'
         );
 
-        $statement->execute([
+        $result = $statement->execute([
             ':uuid' => $user->uuid(),
-            ':username' => $user->getUserName(),
+            ':username' => $user->username(),
             ':first_name' => $user->getFirstName(),
             ':last_name' => $user->getLastName()
         ]);
+
+        if (!$result) {
+            throw new AlreadyRegisteredException('Username or UUID already registered ');
+        }
     }
 
 

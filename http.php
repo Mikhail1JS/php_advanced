@@ -5,6 +5,7 @@ use Project\Api\Blog\Exceptions\HttpException;
 use Project\Api\Blog\Repositories\UsersRepositories\SqliteUsersRepository;
 use Project\Api\Blog\Repositories\PostsRepositories\SqlitePostsRepository;
 use Project\Api\Http\Actions\Posts\CreatePosts;
+use Project\Api\Http\Actions\Users\CreateUser;
 use Project\Api\Http\Actions\Users\FindByUserName;
 use Project\Api\Http\ErrorResponse;
 use Project\Api\Http\Request;
@@ -37,7 +38,8 @@ $routes = [
         '/posts/create' => new CreatePosts(
             new SqlitePostsRepository(new PDO ('sqlite:'. __DIR__ .'/blog.sqlite'),new SqliteUsersRepository(new PDO ('sqlite:'. __DIR__ .'/blog.sqlite'))),
             new SqliteUsersRepository(new PDO ('sqlite:'. __DIR__ .'/blog.sqlite'))
-        )
+        ),
+        '/users/create' => new CreateUser(new SqliteUsersRepository(new PDO ('sqlite:'. __DIR__ .'/blog.sqlite'))),
         //    '/posts/show' => new FindByUuid(new SqliteUsersRepository(new PDO ('sqlite:'. __DIR__ .'/blog.sqlite'))),
     ]
 

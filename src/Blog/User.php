@@ -8,7 +8,7 @@ class User
 {
     /**
      * @param UUID $uuid
-     * @param string $userName
+     * @param string $username
      * @param Name $name
      */
     public function __construct
