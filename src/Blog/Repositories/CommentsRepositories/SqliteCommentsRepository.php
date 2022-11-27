@@ -5,6 +5,7 @@ namespace Project\Api\Blog\Repositories\CommentsRepositories;
 use PDO;
 use PDOStatement;
 use Project\Api\Blog\Comment;
+use Project\Api\Blog\Exceptions\AlreadyRegisteredException;
 use Project\Api\Blog\Exceptions\CommentNotFoundException;
 use Project\Api\Blog\Exceptions\InvalidArgumentException;
 use Project\Api\Blog\Exceptions\PostNotFoundException;
@@ -23,18 +24,25 @@ class SqliteCommentsRepository implements CommentsRepositoriesInterface
     )
     {}
 
+    /**
+     * @throws AlreadyRegisteredException
+     */
     public function save(Comment $comment):void{
 
         $statement = $this->connection->prepare(
             'INSERT INTO comments (uuid , post_uuid , author_uuid , text) VALUES (:uuid , :post_uuid, :author_uuid , :text)'
         );
 
-        $statement->execute([
+        $result = $statement->execute([
             ':uuid' => $comment->uuid(),
             ':post_uuid' => $comment->getPostUuid(),
             ':author_uuid' => $comment->getAuthorUuid(),
             ':text' => $comment->getText()
         ]);
+
+        if(!$result){
+            throw new AlreadyRegisteredException('Comment already registered');
+        }
     }
 
 

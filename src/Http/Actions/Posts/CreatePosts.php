@@ -6,8 +6,8 @@ use Project\Api\Blog\Exceptions\HttpException;
 use Project\Api\Blog\Exceptions\InvalidArgumentException;
 use Project\Api\Blog\Exceptions\UserNotFoundException;
 use Project\Api\Blog\Post;
-use Project\Api\Blog\Repositories\PostsRepositories\SqlitePostsRepository;
-use Project\Api\Blog\Repositories\UsersRepositories\SqliteUsersRepository;
+use Project\Api\Blog\Repositories\PostsRepositories\PostsRepositoryInterface;
+use Project\Api\Blog\Repositories\UsersRepositories\UsersRepositoryInterface;
 use Project\Api\Blog\UUID;
 use Project\Api\Http\Actions\ActionInterface;
 use Project\Api\Http\ErrorResponse;
@@ -18,8 +18,8 @@ use Project\Api\Http\SuccessfulResponse;
 class CreatePosts implements ActionInterface
 {
     public function __construct(
-        private SqlitePostsRepository $postsRepository,
-        private SqliteUsersRepository $usersRepository
+        private PostsRepositoryInterface $postsRepository,
+        private UsersRepositoryInterface $usersRepository
     )
     {
     }

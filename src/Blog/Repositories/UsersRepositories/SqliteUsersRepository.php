@@ -41,6 +41,9 @@ class SqliteUsersRepository implements UsersRepositoryInterface
 
 
     /**
+     * @param UUID $uuid
+     * @return User
+     * @throws InvalidArgumentException
      * @throws UserNotFoundException
      */
     public function get(UUID $uuid): User{
@@ -55,7 +58,7 @@ class SqliteUsersRepository implements UsersRepositoryInterface
     }
 
     /**
-     * @throws UserNotFoundException
+     * @throws UserNotFoundException|InvalidArgumentException
      */
     public function getByUsername(string $username): User
     {
@@ -70,7 +73,7 @@ class SqliteUsersRepository implements UsersRepositoryInterface
     }
 
     /**
-     * @throws UserNotFoundException
+     * @throws UserNotFoundException|InvalidArgumentException
      */
     private function getUser(PDOStatement $statement, $value): User
     {

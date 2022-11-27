@@ -4,6 +4,7 @@ namespace Project\Api\Blog\Repositories\PostsRepositories;
 
 use PDO;
 use PDOStatement;
+use Project\Api\Blog\Exceptions\CommentNotFoundException;
 use Project\Api\Blog\Exceptions\InvalidArgumentException;
 use Project\Api\Blog\Exceptions\PostNotFoundException;
 use Project\Api\Blog\Exceptions\UserNotFoundException;
@@ -21,7 +22,7 @@ class SqlitePostsRepository implements PostsRepositoryInterface
     )
     {}
 
-    public function save(Post $post):void{
+    public function save(Post $post): void{
 
         $statement = $this->connection->prepare(
             'INSERT INTO posts (uuid , author_uuid , title , text) VALUES (:uuid , :author_uuid , :title , :text)'
@@ -33,6 +34,24 @@ class SqlitePostsRepository implements PostsRepositoryInterface
             ':title' => $post->getTitle(),
             ':text' => $post->getText()
         ]);
+    }
+
+    /**
+     * @throws PostNotFoundException
+     */
+    public function delete(UUID $uuid): void {
+
+        $statement = $this->connection->prepare(
+            'DELETE from posts WHERE uuid = :uuid'
+        );
+
+       $statement->execute([
+           ':uuid' => $uuid
+        ]);
+
+        if($statement->rowCount() < 1) {
+            throw new PostNotFoundException('No post with such uuid');
+        }
     }
 
 

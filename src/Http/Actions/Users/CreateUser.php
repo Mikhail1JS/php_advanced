@@ -4,7 +4,7 @@ namespace Project\Api\Http\Actions\Users;
 
 use Project\Api\Blog\Exceptions\AlreadyRegisteredException;
 use Project\Api\Blog\Exceptions\HttpException;
-use Project\Api\Blog\Repositories\UsersRepositories\SqliteUsersRepository;
+use Project\Api\Blog\Repositories\UsersRepositories\UsersRepositoryInterface;
 use Project\Api\Blog\User;
 use Project\Api\Blog\UUID;
 use Project\Api\Http\Actions\ActionInterface;
@@ -17,7 +17,7 @@ use Project\Api\Person\Name;
 class CreateUser implements ActionInterface
 {
     public function __construct(
-        private SqliteUsersRepository $usersRepository
+        private UsersRepositoryInterface $usersRepository
     )
     {
     }

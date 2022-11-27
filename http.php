@@ -2,9 +2,12 @@
 
 use Project\Api\Blog\Exceptions\AppException;
 use Project\Api\Blog\Exceptions\HttpException;
+use Project\Api\Blog\Repositories\CommentsRepositories\SqliteCommentsRepository;
 use Project\Api\Blog\Repositories\UsersRepositories\SqliteUsersRepository;
 use Project\Api\Blog\Repositories\PostsRepositories\SqlitePostsRepository;
+use Project\Api\Http\Actions\Comments\CreateComment;
 use Project\Api\Http\Actions\Posts\CreatePosts;
+use Project\Api\Http\Actions\Posts\DeletePost;
 use Project\Api\Http\Actions\Users\CreateUser;
 use Project\Api\Http\Actions\Users\FindByUserName;
 use Project\Api\Http\ErrorResponse;
@@ -16,7 +19,7 @@ require_once __DIR__.'/vendor/autoload.php';
 $request = new Request($_GET,$_SERVER,file_get_contents('php://input'));
 
 try {
-  $path = $request->path();
+   $path = $request->path();
 }catch (HttpException ){
     (new ErrorResponse())->send();
     return;
@@ -34,12 +37,24 @@ $routes = [
     'GET' =>[
         '/users/show' => new FindByUserName(new SqliteUsersRepository(new PDO ('sqlite:'. __DIR__ .'/blog.sqlite'))),
     ],
+    'DELETE' => [
+        '/posts' => new DeletePost(new SqlitePostsRepository(
+            new PDO ('sqlite:'. __DIR__ .'/blog.sqlite'),
+            new SqliteUsersRepository(new PDO ('sqlite:'. __DIR__ .'/blog.sqlite'))),)
+    ],
     'POST' => [
         '/posts/create' => new CreatePosts(
-            new SqlitePostsRepository(new PDO ('sqlite:'. __DIR__ .'/blog.sqlite'),new SqliteUsersRepository(new PDO ('sqlite:'. __DIR__ .'/blog.sqlite'))),
+            new SqlitePostsRepository(new PDO ('sqlite:'. __DIR__ .'/blog.sqlite'),
+                new SqliteUsersRepository(new PDO ('sqlite:'. __DIR__ .'/blog.sqlite'))),
             new SqliteUsersRepository(new PDO ('sqlite:'. __DIR__ .'/blog.sqlite'))
         ),
         '/users/create' => new CreateUser(new SqliteUsersRepository(new PDO ('sqlite:'. __DIR__ .'/blog.sqlite'))),
+        '/comments/create' => new CreateComment(
+            new SqliteUsersRepository(new PDO ('sqlite:'. __DIR__ .'/blog.sqlite')),
+            new SqlitePostsRepository(new PDO ('sqlite:'. __DIR__ .'/blog.sqlite'),new SqliteUsersRepository(new PDO ('sqlite:'. __DIR__ .'/blog.sqlite'))),
+            new SqliteCommentsRepository(new PDO ('sqlite:'. __DIR__ .'/blog.sqlite'), new SqliteUsersRepository(new PDO ('sqlite:'. __DIR__ .'/blog.sqlite')),
+                new SqlitePostsRepository(new PDO ('sqlite:'. __DIR__ .'/blog.sqlite'),new SqliteUsersRepository(new PDO ('sqlite:'. __DIR__ .'/blog.sqlite'))), )
+        )
         //    '/posts/show' => new FindByUuid(new SqliteUsersRepository(new PDO ('sqlite:'. __DIR__ .'/blog.sqlite'))),
     ]
 

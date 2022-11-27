@@ -8,7 +8,7 @@ use PDOStatement;
 use PHPUnit\Framework\TestCase;
 use Project\Api\Blog\Exceptions\InvalidArgumentException;
 use Project\Api\Blog\Exceptions\UserNotFoundException;
-use Project\Api\Blog\Repositories\UsersRepositories\SqlLiteUsersRepository;
+use Project\Api\Blog\Repositories\UsersRepositories\SqliteUsersRepository;
 use Project\Api\Blog\User;
 use Project\Api\Blog\UUID;
 use Project\Api\Person\Name;
@@ -17,7 +17,6 @@ class SqlUsersRepositoryTest extends TestCase
 {
 
     /**
-     * @throws InvalidArgumentException
      */
     public function testItThrowsAnExceptionWhenUserNotFound(): void {
         $connectionStub = $this->createStub(PDO::class);
@@ -28,7 +27,7 @@ class SqlUsersRepositoryTest extends TestCase
 
         $connectionStub->method('prepare')->willReturn($statementStub);
 
-        $repository = new SqlLiteUsersRepository($connectionStub);
+        $repository = new SqliteUsersRepository($connectionStub);
 
         $this->expectException(UserNotFoundException::class);
 
@@ -45,6 +44,7 @@ class SqlUsersRepositoryTest extends TestCase
 
         $statementMock->expects($this->once())
         ->method('execute')
+        ->willReturn(true)
         ->with(
             [':uuid' => '8fff3c75-3c1d-432f-ac79-4b8bccdef8a9',
             ':username' => 'userTest',
@@ -54,7 +54,7 @@ class SqlUsersRepositoryTest extends TestCase
 
         $connectionStub->method('prepare')->willReturn($statementMock);
 
-        $repository = new SqlLiteUsersRepository($connectionStub);
+        $repository = new SqliteUsersRepository($connectionStub);
 
         $repository->save(new User(new UUID('8fff3c75-3c1d-432f-ac79-4b8bccdef8a9'),'userTest', new Name('Jerry','Mouth')));
 
