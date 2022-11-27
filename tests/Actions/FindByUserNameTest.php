@@ -114,7 +114,7 @@ class FindByUserNameTest extends TestCase
                         return $user;
                     }
                 }
-                throw new UserNotFoundException("User not found: $username");
+                throw new UserNotFoundException("User not found : $username");
             }
         };
     }

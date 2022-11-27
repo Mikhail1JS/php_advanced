@@ -43,6 +43,7 @@ class SqlUsersRepositoryTest extends TestCase
 
         $statementMock->expects($this->once())
         ->method('execute')
+        ->willReturn(true)
         ->with(
             [':uuid' => '8fff3c75-3c1d-432f-ac79-4b8bccdef8a9',
             ':username' => 'userTest',
