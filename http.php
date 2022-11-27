@@ -1,10 +1,6 @@
 <?php
-
 use Project\Api\Blog\Exceptions\AppException;
 use Project\Api\Blog\Exceptions\HttpException;
-use Project\Api\Blog\Repositories\CommentsRepositories\SqliteCommentsRepository;
-use Project\Api\Blog\Repositories\UsersRepositories\SqliteUsersRepository;
-use Project\Api\Blog\Repositories\PostsRepositories\SqlitePostsRepository;
 use Project\Api\Http\Actions\Comments\CreateComment;
 use Project\Api\Http\Actions\Posts\CreatePosts;
 use Project\Api\Http\Actions\Posts\DeletePost;
@@ -12,11 +8,13 @@ use Project\Api\Http\Actions\Users\CreateUser;
 use Project\Api\Http\Actions\Users\FindByUserName;
 use Project\Api\Http\ErrorResponse;
 use Project\Api\Http\Request;
-use Project\Api\Http\SuccessfulResponse;
 
-require_once __DIR__.'/vendor/autoload.php';
+$container = require __DIR__.'/bootstrap.php';
 
-$request = new Request($_GET,$_SERVER,file_get_contents('php://input'));
+$request = new Request(
+    $_GET,
+    $_SERVER,
+    file_get_contents('php://input'));
 
 try {
    $path = $request->path();
@@ -32,33 +30,18 @@ try {
     return;
 }
 
-
 $routes = [
     'GET' =>[
-        '/users/show' => new FindByUserName(new SqliteUsersRepository(new PDO ('sqlite:'. __DIR__ .'/blog.sqlite'))),
+        '/users/show' => FindByUserName::class
     ],
     'DELETE' => [
-        '/posts' => new DeletePost(new SqlitePostsRepository(
-            new PDO ('sqlite:'. __DIR__ .'/blog.sqlite'),
-            new SqliteUsersRepository(new PDO ('sqlite:'. __DIR__ .'/blog.sqlite'))),)
+        '/posts' => DeletePost::class
     ],
     'POST' => [
-        '/posts/create' => new CreatePosts(
-            new SqlitePostsRepository(new PDO ('sqlite:'. __DIR__ .'/blog.sqlite'),
-                new SqliteUsersRepository(new PDO ('sqlite:'. __DIR__ .'/blog.sqlite'))),
-            new SqliteUsersRepository(new PDO ('sqlite:'. __DIR__ .'/blog.sqlite'))
-        ),
-        '/users/create' => new CreateUser(new SqliteUsersRepository(new PDO ('sqlite:'. __DIR__ .'/blog.sqlite'))),
-        '/comments/create' => new CreateComment(
-            new SqliteUsersRepository(new PDO ('sqlite:'. __DIR__ .'/blog.sqlite')),
-            new SqlitePostsRepository(new PDO ('sqlite:'. __DIR__ .'/blog.sqlite'),new SqliteUsersRepository(new PDO ('sqlite:'. __DIR__ .'/blog.sqlite'))),
-            new SqliteCommentsRepository(new PDO ('sqlite:'. __DIR__ .'/blog.sqlite'), new SqliteUsersRepository(new PDO ('sqlite:'. __DIR__ .'/blog.sqlite')),
-                new SqlitePostsRepository(new PDO ('sqlite:'. __DIR__ .'/blog.sqlite'),new SqliteUsersRepository(new PDO ('sqlite:'. __DIR__ .'/blog.sqlite'))), )
-        )
-        //    '/posts/show' => new FindByUuid(new SqliteUsersRepository(new PDO ('sqlite:'. __DIR__ .'/blog.sqlite'))),
+        '/posts/create' => CreatePosts::class,
+        '/users/create' => CreateUser::class,
+        '/comments/create' => CreateComment::class
     ]
-
-
 ];
 
 
@@ -72,7 +55,8 @@ if(!array_key_exists($method,$routes)){
     return;
 }
 
-$action = $routes[$method][$path];
+$actionClassName = $routes[$method][$path];
+$action = $container->get($actionClassName);
 
 try {
     $response = $action->handle($request);

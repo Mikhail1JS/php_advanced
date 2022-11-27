@@ -2,7 +2,10 @@
 
 namespace Project\Api\Blog\Exceptions;
 
-class NotFoundException extends \Exception
+use Psr\Container\NotFoundExceptionInterface;
+use Exception;
+
+class NotFoundException extends Exception implements NotFoundExceptionInterface
 {
 
 }

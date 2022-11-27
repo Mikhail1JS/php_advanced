@@ -122,7 +122,8 @@ class CreatePostTest extends TestCase
 
                 $data = [
                     'author_uuid' => '69265fe0-6ba4-43b4-85bc-bcedeb31e6ba',
-                    'text' => 'someText'
+                    'text' => 'someText',
+                    'title' => 'someTitle'
                 ];
 
                 if(!array_key_exists($field,$data)) {

@@ -6,6 +6,11 @@
             "Project\\Api\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Project\\Api\\Tests\\": "tests/"
+        }
+    },
     "authors": [
         {
             "name": "Mikhail1JS",
@@ -20,7 +25,8 @@
         "roave/security-advisories": "dev-latest",
         "symfony/polyfill-uuid": "^1.26",
         "ext-pdo": "*",
-        "ext-mbstring": "*"
+        "ext-mbstring": "*",
+        "psr/container": "^2.0"
     },
     "scripts": {
         "test": "phpunit tests --testdox --colors"
