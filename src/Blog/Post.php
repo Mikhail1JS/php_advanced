@@ -27,9 +27,7 @@ class Post
     }
 
 
-    /**
-     * @return int
-     */
+
     public function uuid():string {
         return $this->uuid;
     }
