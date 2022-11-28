@@ -6,7 +6,7 @@ use Project\Api\Blog\Post;
 use Project\Api\Blog\User;
 use Project\Api\Blog\UUID;
 
-class PostLike implements LikeInterface
+class PostLike
 {
     /**
      * @param UUID $uuid

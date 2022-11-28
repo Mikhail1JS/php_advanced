@@ -2,6 +2,8 @@
 use Project\Api\Blog\Exceptions\AppException;
 use Project\Api\Blog\Exceptions\HttpException;
 use Project\Api\Http\Actions\Comments\CreateComment;
+use Project\Api\Http\Actions\Likes\AddLikeToComment;
+use Project\Api\Http\Actions\Likes\AddLikeToPost;
 use Project\Api\Http\Actions\Posts\CreatePosts;
 use Project\Api\Http\Actions\Posts\DeletePost;
 use Project\Api\Http\Actions\Users\CreateUser;
@@ -39,8 +41,10 @@ $routes = [
     ],
     'POST' => [
         '/posts/create' => CreatePosts::class,
+        '/posts/like' => AddLikeToPost::class,
         '/users/create' => CreateUser::class,
-        '/comments/create' => CreateComment::class
+        '/comments/create' => CreateComment::class,
+        '/comments/like' => AddLikeToComment::class
     ]
 ];
 
