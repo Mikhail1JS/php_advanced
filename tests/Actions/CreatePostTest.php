@@ -10,10 +10,12 @@ use Project\Api\Blog\Repositories\PostsRepositories\PostsRepositoryInterface;
 use Project\Api\Blog\User;
 use Project\Api\Blog\UUID;
 use Project\Api\Http\Actions\Posts\CreatePosts;
+use Project\Api\Http\Auth\JsonBodyUuidIdentification;
 use Project\Api\Http\ErrorResponse;
 use Project\Api\Http\Request;
 use Project\Api\Http\SuccessfulResponse;
 use Project\Api\Person\Name;
+use Psr\Log\LoggerInterface;
 
 class CreatePostTest extends TestCase
 {
@@ -24,14 +26,21 @@ class CreatePostTest extends TestCase
 
     public function testItReturnsSuccessfulResponse(): void
     {
+        $data = json_encode([
+            'user_uuid' => '69265fe0-6ba4-43b4-85bc-bcedeb31e6ba',
+            'title' => 'someTitle',
+            'text' => 'someText',
+        ]);
 
-        $request = $this->requestStub([],[],'test');
-        $userRepository = $this->userRepository();
+        $request = new Request([], [], $data);
+        $usersRepository = $this->userRepository();
+        $auth = new JsonBodyUuidIdentification($usersRepository);
+        $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
         $postRepository = $this->createMock(PostsRepositoryInterface::class);
-        $action = new CreatePosts($postRepository,$userRepository);
+        $action = new CreatePosts($postRepository, $auth, $logger);
         $response = $action->handle($request);
 
-        $this->assertInstanceOf(SuccessfulResponse::class,$response);
+        $this->assertInstanceOf(SuccessfulResponse::class, $response);
 
     }
 
@@ -40,49 +49,66 @@ class CreatePostTest extends TestCase
      * @preserveGlobalState disabled
      */
 
-    public function testItReturnsAnErrorWhenWrongUuid():void {
-
-    $request = $this->getMockBuilder(Request::class)
-                ->onlyMethods(['jsonBodyField'])
-                ->setConstructorArgs(array([],[],'test'))
-                ->getMock();
-    $request->expects($this->any())->method('jsonBodyField')->willReturn('testValue');
-    $usersRepository = $this->createMock(UsersRepositoryInterface::class);
-    $postsRepository = $this->createMock(PostsRepositoryInterface::class);
-    $action = new CreatePosts($postsRepository,$usersRepository);
-    $response = $action->handle($request);
-
-    $this->assertInstanceOf(ErrorResponse::class,$response);
-
-    $response->send();
-
-    $this->expectOutputString('{"success":false,"reason":"Malformed UUID: testValue"}');
-
-
-    }
-
-    /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     */
-
-    public function testItReturnsAnErrorWhenUserNotFoundByUuid():void {
+    public function testItReturnsAnErrorWhenWrongUuid(): void
+    {
 
         $request = $this->getMockBuilder(Request::class)
             ->onlyMethods(['jsonBodyField'])
-            ->setConstructorArgs(array([],[],'test'))
+            ->setConstructorArgs(array([], [], 'test'))
             ->getMock();
-        $request->expects($this->any())->method('jsonBodyField')->willReturn('69265fe0-6ba4-43b4-85bc-bcedeb31e6ba');
+
+        $request->expects($this->any())->method('jsonBodyField')->willReturn('testValue');
+
+
+        $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
         $usersRepository = $this->createMock(UsersRepositoryInterface::class);
+        $auth = new JsonBodyUuidIdentification($usersRepository);
+        $postsRepository = $this->createMock(PostsRepositoryInterface::class);
+
+        $action = new CreatePosts($postsRepository, $auth, $logger);
+
+        $response = $action->handle($request);
+
+        $this->assertInstanceOf(ErrorResponse::class, $response);
+
+        $response->send();
+
+        $this->expectOutputString('{"success":false,"reason":"Malformed UUID: testValue"}');
+
+
+    }
+
+    /**
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
+
+    public function testItReturnsAnErrorWhenUserNotFoundByUuid(): void
+    {
+
+        $request = $this->getMockBuilder(Request::class)
+            ->onlyMethods(['jsonBodyField'])
+            ->setConstructorArgs(array([], [], 'test'))
+            ->getMock();
+
+        $request->expects($this->any())->method('jsonBodyField')->willReturn('69265fe0-6ba4-43b4-85bc-bcedeb31e6ba');
+
+        $usersRepository = $this->createMock(UsersRepositoryInterface::class);
+
         $usersRepository
             ->method('get')
             ->willThrowException(new UserNotFoundException("Cannot get user: 69265fe0-6ba4-43b4-85bc-bcedeb31e6ba"));
 
+        $auth = new JsonBodyUuidIdentification($usersRepository);
+
         $postsRepository = $this->createMock(PostsRepositoryInterface::class);
-        $action = new CreatePosts($postsRepository,$usersRepository);
+        $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
+
+        $action = new CreatePosts($postsRepository, $auth, $logger);
+
         $response = $action->handle($request);
 
-        $this->assertInstanceOf(ErrorResponse::class,$response);
+        $this->assertInstanceOf(ErrorResponse::class, $response);
 
         $response->send();
 
@@ -96,15 +122,18 @@ class CreatePostTest extends TestCase
      * @preserveGlobalState disabled
      */
 
-    public function testItReturnsAnErrorWhenRequestHasNotRequireDataForPost():void {
+    public function testItReturnsAnErrorWhenRequestHasNotRequireDataForPost(): void
+    {
 
-        $request = $this->requestStub([],[],'test');
+        $request = $this->requestStub([], [], 'test');
         $usersRepository = $this->userRepository();
         $postsRepository = $this->createMock(PostsRepositoryInterface::class);
-        $action = new CreatePosts($postsRepository,$usersRepository);
+        $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
+        $auth = new JsonBodyUuidIdentification($usersRepository);
+        $action = new CreatePosts($postsRepository, $auth, $logger);
         $response = $action->handle($request);
 
-        $this->assertInstanceOf(ErrorResponse::class,$response);
+        $this->assertInstanceOf(ErrorResponse::class, $response);
 
         $response->send();
 
@@ -113,20 +142,18 @@ class CreatePostTest extends TestCase
 
     }
 
-    private function requestStub(array $get, array $server, string $stringValue): Request
+    private function requestStub(array $get, array $server, string $stringValue,): Request
     {
         return new class ($get, $server, $stringValue) extends Request {
 
             public function jsonBodyField(string $field): mixed
             {
-
                 $data = [
-                    'author_uuid' => '69265fe0-6ba4-43b4-85bc-bcedeb31e6ba',
+                    'user_uuid' => '69265fe0-6ba4-43b4-85bc-bcedeb31e6ba',
                     'text' => 'someText',
-                    'title' => 'someTitle'
                 ];
 
-                if(!array_key_exists($field,$data)) {
+                if (!array_key_exists($field, $data)) {
                     throw new HttpException("No such field:$field");
                 }
 
@@ -138,7 +165,8 @@ class CreatePostTest extends TestCase
 
     }
 
-    private function userRepository (): UsersRepositoryInterface{
+    private function userRepository(): UsersRepositoryInterface
+    {
         return new class implements UsersRepositoryInterface {
 
             public function save(User $user): void
@@ -148,11 +176,11 @@ class CreatePostTest extends TestCase
 
             public function get(UUID $uuid): User
             {
-               return new User (
-                   new UUID('69265fe0-6ba4-43b4-85bc-bcedeb31e6ba'),
-                   'Fire92',
-                   new Name("John",'Black')
-               );
+                return new User (
+                    new UUID('69265fe0-6ba4-43b4-85bc-bcedeb31e6ba'),
+                    'Fire92',
+                    new Name("John", 'Black')
+                );
             }
 
             public function getByUsername(string $username): User
