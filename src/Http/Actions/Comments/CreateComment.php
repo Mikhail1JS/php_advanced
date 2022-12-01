@@ -8,9 +8,12 @@ use Project\Api\Blog\Exceptions\HttpException;
 use Project\Api\Blog\Exceptions\InvalidArgumentException;
 use Project\Api\Blog\Exceptions\PostNotFoundException;
 use Project\Api\Blog\Exceptions\UserNotFoundException;
+use Project\Api\Blog\Repositories\CommentsRepositories\CommentsRepositoriesInterface;
 use Project\Api\Blog\Repositories\CommentsRepositories\SqliteCommentsRepository;
+use Project\Api\Blog\Repositories\PostsRepositories\PostsRepositoryInterface;
 use Project\Api\Blog\Repositories\PostsRepositories\SqlitePostsRepository;
 use Project\Api\Blog\Repositories\UsersRepositories\SqliteUsersRepository;
+use Project\Api\Blog\Repositories\UsersRepositories\UsersRepositoryInterface;
 use Project\Api\Blog\UUID;
 use Project\Api\Http\Actions\ActionInterface;
 use Project\Api\Http\ErrorResponse;
@@ -21,9 +24,9 @@ use Project\Api\Http\SuccessfulResponse;
 class CreateComment implements ActionInterface
 {
 
-    public function __construct(private SqliteUsersRepository $userRepository ,
-                                private SqlitePostsRepository $postsRepository ,
-                                private SqliteCommentsRepository $commentsRepository) {
+    public function __construct(private UsersRepositoryInterface $userRepository ,
+                                private PostsRepositoryInterface $postsRepository ,
+                                private CommentsRepositoriesInterface $commentsRepository) {
 
     }
 

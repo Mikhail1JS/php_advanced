@@ -1,8 +1,12 @@
 <?php
 
 use Project\Api\Blog\Container\DIContainer;
+use Project\Api\Blog\Repositories\CommentsLikesRepositories\CommentsLikesRepositoriesInterface;
+use Project\Api\Blog\Repositories\CommentsLikesRepositories\SqliteCommentsLikesRepository;
 use Project\Api\Blog\Repositories\CommentsRepositories\CommentsRepositoriesInterface;
 use Project\Api\Blog\Repositories\CommentsRepositories\SqliteCommentsRepository;
+use Project\Api\Blog\Repositories\PostsLikesRepositories\PostsLikesRepositoryInterface;
+use Project\Api\Blog\Repositories\PostsLikesRepositories\SqlitePostsLikesRepository;
 use Project\Api\Blog\Repositories\PostsRepositories\PostsRepositoryInterface;
 use Project\Api\Blog\Repositories\PostsRepositories\SqlitePostsRepository;
 use Project\Api\Blog\Repositories\UsersRepositories\SqliteUsersRepository;
@@ -29,6 +33,16 @@ $container->bind(
 $container->bind(
     CommentsRepositoriesInterface::class,
     SqliteCommentsRepository::class
+);
+
+$container->bind(
+   PostsLikesRepositoryInterface::class,
+   SqlitePostsLikesRepository::class
+);
+
+$container->bind(
+    CommentsLikesRepositoriesInterface::class,
+    SqliteCommentsLikesRepository::class
 );
 
 return $container;
