@@ -12,13 +12,11 @@ use Project\Api\Blog\Repositories\UsersRepositories\UsersRepositoryInterface;
 use Project\Api\Blog\User;
 use Project\Api\Blog\UUID;
 use Project\Api\Person\Name;
+use Psr\Log\LoggerInterface;
 
 class CreateUserCommandTest extends TestCase
 {
 
-    /**
-     * @throws ArgumentsException
-     */
 
     public function makeUserRepository($value = 'empty'): UsersRepositoryInterface {
 
@@ -32,6 +30,7 @@ class CreateUserCommandTest extends TestCase
 
                 public function get(UUID $uuid): User
                 {
+                    return new User(UUID::random(),'user', new Name("first",'last'));
 
                 }
 
@@ -70,8 +69,9 @@ class CreateUserCommandTest extends TestCase
      */
     public function testItThrowsAnExceptionWhenUserAlreadyExists(): void {
 
+        $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
 
-        $command = new CreateUserCommand($this->makeUserRepository('user'));
+        $command = new CreateUserCommand($this->makeUserRepository('user'),$logger);
 
         $this->expectException(CommandException::class);
 
@@ -83,8 +83,9 @@ class CreateUserCommandTest extends TestCase
 
 
     public function testItRequiresFirstName(): void  {
+        $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
 
-        $command = new CreateUserCommand($this->makeUserRepository());
+        $command = new CreateUserCommand($this->makeUserRepository(),$logger);
 
         $this->expectException(ArgumentsException::class);
         $this->expectExceptionMessage("No such argument: first_name");
@@ -95,7 +96,9 @@ class CreateUserCommandTest extends TestCase
 
     public function testItRequiresLastName(): void  {
 
-        $command = new CreateUserCommand($this->makeUserRepository());
+        $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
+
+        $command = new CreateUserCommand($this->makeUserRepository(),$logger);
 
         $this->expectException(ArgumentsException::class);
         $this->expectExceptionMessage("No such argument: last_name");
@@ -106,10 +109,12 @@ class CreateUserCommandTest extends TestCase
 
     public function testItSavesUserToRepository(): void {
 
+        $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
+
         $userRepo = $this->createMock(UsersRepositoryInterface::class);
         $userRepo->method('getByUsername')->will($this->throwException(new UserNotFoundException));
 
-        $command = new CreateUserCommand($userRepo);
+        $command = new CreateUserCommand($userRepo,$logger);
 
         $userRepo->expects($this->once())
             ->method('save');

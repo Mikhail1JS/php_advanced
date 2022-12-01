@@ -49,6 +49,9 @@ class Request
     return $this->server['REQUEST_METHOD'];
     }
 
+    /**
+     * @throws HttpException
+     */
     public function jsonBodyField (string $field): mixed {
 
         $data = $this->jsonBody();

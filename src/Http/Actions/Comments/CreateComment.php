@@ -20,13 +20,15 @@ use Project\Api\Http\ErrorResponse;
 use Project\Api\Http\Request;
 use Project\Api\Http\Response;
 use Project\Api\Http\SuccessfulResponse;
+use Psr\Log\LoggerInterface;
 
 class CreateComment implements ActionInterface
 {
 
     public function __construct(private UsersRepositoryInterface $userRepository ,
                                 private PostsRepositoryInterface $postsRepository ,
-                                private CommentsRepositoriesInterface $commentsRepository) {
+                                private CommentsRepositoriesInterface $commentsRepository,
+                                private LoggerInterface          $logger) {
 
     }
 
@@ -50,11 +52,11 @@ class CreateComment implements ActionInterface
         $newCommentUuid = UUID::random();
         $newComment = new Comment($newCommentUuid,$user,$post,$text);
 
-        try {
-            $this->commentsRepository->save($newComment);
-        }catch (AlreadyRegisteredException $e) {
-            return new ErrorResponse($e->getMessage());
-        }
+
+        $this->commentsRepository->save($newComment);
+
+        $this->logger->info("Comment created: $newCommentUuid");
+
 
         return new SuccessfulResponse([
             'uuid' => (string) $newCommentUuid

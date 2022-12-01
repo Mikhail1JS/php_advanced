@@ -13,11 +13,13 @@ use Project\Api\Http\Request;
 use Project\Api\Http\Response;
 use Project\Api\Http\SuccessfulResponse;
 use Project\Api\Person\Name;
+use Psr\Log\LoggerInterface;
 
 class CreateUser implements ActionInterface
 {
     public function __construct(
-        private UsersRepositoryInterface $usersRepository
+        private UsersRepositoryInterface $usersRepository,
+        private LoggerInterface          $logger
     )
     {
     }
@@ -34,11 +36,13 @@ class CreateUser implements ActionInterface
                     $request->jsonBodyField('last_name')
                 )
             );
-
-            $this->usersRepository->save($newUser);
         } catch (AlreadyRegisteredException | HttpException $e) {
             return new ErrorResponse($e->getMessage());
         }
+
+        $this->usersRepository->save($newUser);
+
+        $this->logger->info("User created: $newUserUuid");
 
         return new SuccessfulResponse(
             [

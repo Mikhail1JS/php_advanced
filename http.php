@@ -10,6 +10,7 @@ use Project\Api\Http\Actions\Users\CreateUser;
 use Project\Api\Http\Actions\Users\FindByUserName;
 use Project\Api\Http\ErrorResponse;
 use Project\Api\Http\Request;
+use Psr\Log\LoggerInterface;
 
 $container = require __DIR__.'/bootstrap.php';
 
@@ -18,17 +19,21 @@ $request = new Request(
     $_SERVER,
     file_get_contents('php://input'));
 
+$logger = $container->get(LoggerInterface::class);
+
 try {
    $path = $request->path();
-}catch (HttpException ){
-    (new ErrorResponse())->send();
+}catch (HttpException $e){
+    $logger->warning($e->getMessage())
+    (new ErrorResponse)->send();
     return;
 }
 
 try {
     $method = $request->method();
-}catch(HttpException){
-    (new ErrorResponse())->send();
+}catch(HttpException $e){
+    $logger->warning($e->getMessage())
+    (new ErrorResponse)->send();
     return;
 }
 
@@ -49,22 +54,21 @@ $routes = [
 ];
 
 
-if(!array_key_exists($path,$routes[$method])){
+if(!array_key_exists($method,$routes) || !array_key_exists($path,$routes[$method])){
+    $message = "Route not found: $method $path";
+    $logger->notice($message);
     (new ErrorResponse('Not found'))->send();
     return;
 }
 
-if(!array_key_exists($method,$routes)){
-    (new ErrorResponse('Not found'))->send();
-    return;
-}
 
 $actionClassName = $routes[$method][$path];
-$action = $container->get($actionClassName);
 
 try {
+    $action = $container->get($actionClassName);
     $response = $action->handle($request);
 }catch (AppException $e){
+    $logger->error($e->getMessage(), ['exception' => $e])
     (new ErrorResponse($e->getMessage()))->send();
     return;
 }

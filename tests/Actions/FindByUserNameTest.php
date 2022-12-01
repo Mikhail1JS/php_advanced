@@ -12,6 +12,7 @@ use Project\Api\Http\ErrorResponse;
 use Project\Api\Http\Request;
 use Project\Api\Http\SuccessfulResponse;
 use Project\Api\Person\Name;
+use Psr\Log\LoggerInterface;
 
 class FindByUserNameTest extends TestCase
 {
@@ -23,17 +24,14 @@ class FindByUserNameTest extends TestCase
     public function testItReturnsErrorResponseIfNoUserNameProvided ():void {
 
         $request = new Request([],[],'test');
-
+        $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
         $userRepository = $this->userRepository([]);
-
-        $action = new FindByUserName($userRepository);
-
+        $action = new FindByUserName($userRepository,$logger);
         $response = $action->handle($request);
 
         $response->send();
 
         $this->assertInstanceOf(ErrorResponse::class, $response);
-
         $this->expectOutputString('{"success":false,"reason":"No such query param in the request: username"}');
 
     }
@@ -46,11 +44,9 @@ class FindByUserNameTest extends TestCase
     public function testItReturnsErrorResponseIfUserNotFound ():void {
 
         $request = new Request(['username' => 'Fire92'],[], 'test');
-
+        $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
         $userRepository = $this->userRepository([]);
-
-        $action = new FindByUserName($userRepository);
-
+        $action = new FindByUserName($userRepository,$logger);
         $response = $action->handle($request);
 
         $response->send();
@@ -67,6 +63,7 @@ class FindByUserNameTest extends TestCase
 
     public function testItReturnsSuccessfulResponse (): void {
 
+        $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
         $request = new Request(['username'=> 'Fire92'], [], 'test');
 
         $userRepository = $this->userRepository(
@@ -77,7 +74,7 @@ class FindByUserNameTest extends TestCase
             ]
         );
 
-        $action = new FindByUserName($userRepository);
+        $action = new FindByUserName($userRepository,$logger);
 
         $response = $action->handle($request);
 

@@ -24,9 +24,6 @@ class SqliteCommentsRepository implements CommentsRepositoriesInterface
     )
     {}
 
-    /**
-     * @throws AlreadyRegisteredException
-     */
     public function save(Comment $comment):void{
 
         $statement = $this->connection->prepare(
@@ -40,9 +37,6 @@ class SqliteCommentsRepository implements CommentsRepositoriesInterface
             ':text' => $comment->getText()
         ]);
 
-        if(!$result){
-            throw new AlreadyRegisteredException('Comment already registered');
-        }
     }
 
 

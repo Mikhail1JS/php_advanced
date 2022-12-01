@@ -9,11 +9,15 @@ use Project\Api\Http\Actions\ActionInterface;
 use Project\Api\Http\ErrorResponse;
 use Project\Api\Http\Response;
 use Project\Api\Http\SuccessfulResponse;
+use Psr\Log\LoggerInterface;
 
 class FindByUserName implements ActionInterface
 {
 
-    public function __construct( private UsersRepositoryInterface $userRepository){
+    public function __construct(
+        private UsersRepositoryInterface $userRepository,
+        private LoggerInterface          $logger
+    ){
     }
 
     public function handle($request): Response
@@ -27,6 +31,7 @@ class FindByUserName implements ActionInterface
         try {
             $user = $this->userRepository->getByUsername($username);
         }catch (UserNotFoundException $e) {
+           $this->logger->warning($e->getMessage());
             return  new ErrorResponse($e->getMessage());
         }
 
