@@ -3,6 +3,8 @@
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Project\Api\Blog\Container\DIContainer;
+use Project\Api\Blog\Repositories\AuthTokenRepository\AuthTokensRepositoryInterface;
+use Project\Api\Blog\Repositories\AuthTokenRepository\SqliteAuthTokensRepository;
 use Project\Api\Blog\Repositories\CommentsLikesRepositories\CommentsLikesRepositoriesInterface;
 use Project\Api\Blog\Repositories\CommentsLikesRepositories\SqliteCommentsLikesRepository;
 use Project\Api\Blog\Repositories\CommentsRepositories\CommentsRepositoriesInterface;
@@ -13,8 +15,13 @@ use Project\Api\Blog\Repositories\PostsRepositories\PostsRepositoryInterface;
 use Project\Api\Blog\Repositories\PostsRepositories\SqlitePostsRepository;
 use Project\Api\Blog\Repositories\UsersRepositories\SqliteUsersRepository;
 use Project\Api\Blog\Repositories\UsersRepositories\UsersRepositoryInterface;
+use Project\Api\Http\Auth\AuthenticationInterface;
+use Project\Api\Http\Auth\BearerTokenAuthentication;
 use Project\Api\Http\Auth\IdentificationInterface;
 use Project\Api\Http\Auth\JsonBodyUuidIdentification;
+use Project\Api\Http\Auth\PasswordAuthentication;
+use Project\Api\Http\Auth\PasswordAuthenticationInterface;
+use Project\Api\Http\Auth\TokenAuthenticationInterface;
 use Psr\Log\LoggerInterface;
 
 require_once __DIR__ . '/vendor/autoload.php';
@@ -75,7 +82,20 @@ $container->bind(LoggerInterface::class,
     $logger
 );
 
-$container->bind(IdentificationInterface::class,
-JsonBodyUuidIdentification::class);
+//$container->bind(AuthenticationInterface::class,
+//JsonBodyUuidIdentification::class);
+
+$container->bind(PasswordAuthenticationInterface::class,
+    PasswordAuthentication::class);
+
+$container->bind(
+    AuthTokensRepositoryInterface::class,
+   SqliteAuthTokensRepository::class
+);
+
+$container->bind(
+    TokenAuthenticationInterface::class,
+    BearerTokenAuthentication::class
+);
 
 return $container;

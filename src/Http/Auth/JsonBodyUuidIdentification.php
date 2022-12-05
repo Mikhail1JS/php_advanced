@@ -11,7 +11,7 @@ use Project\Api\Blog\User;
 use Project\Api\Blog\UUID;
 use Project\Api\Http\Request;
 
-class JsonBodyUuidIdentification implements IdentificationInterface
+class JsonBodyUuidIdentification implements AuthenticationInterface
 {
 
     public function __construct(

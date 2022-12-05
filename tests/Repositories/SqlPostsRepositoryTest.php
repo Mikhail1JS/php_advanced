@@ -59,7 +59,7 @@ class SqlPostsRepositoryTest extends TestCase
         $userRepository = new SqliteUsersRepository($connectionStub);
         $postRepository = new SqlitePostsRepository($connectionStub, $userRepository);
 
-        $user = new User(new UUID("69265fe0-6ba4-43b4-85bc-bcedeb31e6ba"), "Fire92", new Name('Tom', 'Black'));
+        $user = new User(new UUID("69265fe0-6ba4-43b4-85bc-bcedeb31e6ba"), "Fire92",'password', new Name('Tom', 'Black'));
 
         $post = new Post(new UUID("5b9a7d5e-c221-4a91-805e-05b638f596ee"), $user, 'TestTitle', 'SomeText');
 
@@ -83,6 +83,7 @@ class SqlPostsRepositoryTest extends TestCase
             ->willReturn([
                 'uuid' => '8b45aec5-d71c-42b1-9a62-c54229c46204',
                 'username' => 'Fire92',
+                'password' => 'password',
                 'first_name' => 'John',
                 'last_name'=> 'Black'
             ]);
@@ -127,6 +128,7 @@ class SqlPostsRepositoryTest extends TestCase
             ->willReturn([
                 'uuid' => '8b45aec5-d71c-42b1-9a62-c54229c46204',
                 'username' => 'Fire92',
+                'password' => 'password',
                 'first_name' => 'John',
                 'last_name'=> 'Black'
             ]);

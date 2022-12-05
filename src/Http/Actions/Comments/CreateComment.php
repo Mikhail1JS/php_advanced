@@ -25,10 +25,12 @@ use Psr\Log\LoggerInterface;
 class CreateComment implements ActionInterface
 {
 
-    public function __construct(private UsersRepositoryInterface $userRepository ,
-                                private PostsRepositoryInterface $postsRepository ,
-                                private CommentsRepositoriesInterface $commentsRepository,
-                                private LoggerInterface          $logger) {
+    public function __construct(
+        private UsersRepositoryInterface      $userRepository,
+        private PostsRepositoryInterface      $postsRepository,
+        private CommentsRepositoriesInterface $commentsRepository,
+        private LoggerInterface               $logger)
+    {
 
     }
 
@@ -38,19 +40,19 @@ class CreateComment implements ActionInterface
             $authorUuid = new UUID($request->jsonBodyField('author_uuid'));
             $postUuid = new UUID($request->jsonBodyField('post_uuid'));
             $text = $request->jsonBodyField('text');
-        }catch (HttpException | InvalidArgumentException $e){
+        } catch (HttpException|InvalidArgumentException $e) {
             return new ErrorResponse($e->getMessage());
         }
 
         try {
             $user = $this->userRepository->get($authorUuid);
             $post = $this->postsRepository->get($postUuid);
-        } catch (UserNotFoundException | PostNotFoundException | InvalidArgumentException $e) {
+        } catch (UserNotFoundException|PostNotFoundException|InvalidArgumentException $e) {
             return new ErrorResponse($e->getMessage());
         }
 
         $newCommentUuid = UUID::random();
-        $newComment = new Comment($newCommentUuid,$user,$post,$text);
+        $newComment = new Comment($newCommentUuid, $user, $post, $text);
 
 
         $this->commentsRepository->save($newComment);
@@ -59,7 +61,7 @@ class CreateComment implements ActionInterface
 
 
         return new SuccessfulResponse([
-            'uuid' => (string) $newCommentUuid
+            'uuid' => (string)$newCommentUuid
         ]);
     }
 }

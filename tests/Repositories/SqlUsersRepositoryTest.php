@@ -47,6 +47,7 @@ class SqlUsersRepositoryTest extends TestCase
         ->with(
             [':uuid' => '8fff3c75-3c1d-432f-ac79-4b8bccdef8a9',
             ':username' => 'userTest',
+            ':password' => 'password',
             ':first_name' => 'Jerry',
             ':last_name' => 'Mouth']
         );
@@ -55,7 +56,7 @@ class SqlUsersRepositoryTest extends TestCase
 
         $repository = new SqliteUsersRepository($connectionStub);
 
-        $repository->save(new User(new UUID('8fff3c75-3c1d-432f-ac79-4b8bccdef8a9'),'userTest', new Name('Jerry','Mouth')));
+        $repository->save(new User(new UUID('8fff3c75-3c1d-432f-ac79-4b8bccdef8a9'),'userTest', 'password', new Name('Jerry','Mouth')));
 
     }
 
@@ -73,6 +74,7 @@ class SqlUsersRepositoryTest extends TestCase
         ->willReturn([
             'uuid' => '69265fe0-6ba4-43b4-85bc-bcedeb31e6ba',
             'username' => 'Fire92',
+            'password' => 'password',
             'first_name' => 'John',
             'last_name'=> 'Black'
         ]);
@@ -81,7 +83,7 @@ class SqlUsersRepositoryTest extends TestCase
 
         $repository = new SqliteUsersRepository($connectionStub);
 
-        $expectedUser = new User (new UUID('69265fe0-6ba4-43b4-85bc-bcedeb31e6ba'),'Fire92',new Name('John','Black'));
+        $expectedUser = new User (new UUID('69265fe0-6ba4-43b4-85bc-bcedeb31e6ba'),'Fire92','password', new Name('John','Black'));
 
         $this->assertEquals($expectedUser,$repository->get(new UUID('69265fe0-6ba4-43b4-85bc-bcedeb31e6ba')));
     }
@@ -101,6 +103,7 @@ class SqlUsersRepositoryTest extends TestCase
             ->willReturn([
                 'uuid' => '69265fe0-6ba4-43b4-85bc-bcedeb31e6ba',
                 'username' => 'Fire92',
+                'password' => 'password',
                 'first_name' => 'John',
                 'last_name'=> 'Black'
             ]);
@@ -109,7 +112,7 @@ class SqlUsersRepositoryTest extends TestCase
 
         $repository = new SqliteUsersRepository($connectionStub);
 
-        $expectedUser = new User (new UUID('69265fe0-6ba4-43b4-85bc-bcedeb31e6ba'),'Fire92',new Name('John','Black'));
+        $expectedUser = new User (new UUID('69265fe0-6ba4-43b4-85bc-bcedeb31e6ba'),'Fire92','password', new Name('John','Black'));
 
         $this->assertEquals($expectedUser,$repository->getByUsername('Fire92'));
     }

@@ -70,6 +70,7 @@ class FindByUserNameTest extends TestCase
             [
                 new User(UUID::random(),
                     'Fire92',
+                    'password',
                     new Name('Tom','White')),
             ]
         );

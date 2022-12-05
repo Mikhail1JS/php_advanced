@@ -9,12 +9,14 @@ class User
     /**
      * @param UUID $uuid
      * @param string $username
+     * @param string $hashedPassword
      * @param Name $name
      */
     public function __construct
     (
         private UUID $uuid,
         private string $username,
+        private string $hashedPassword,
         private Name $name,
     ){ }
 
@@ -24,17 +26,9 @@ class User
     public function __toString(): string
     {
 
-        return "User with id {$this->uuid()} : Name - {$this->getFirstName()} and Lastname - {$this->getLastName()} ";
+        return (string) $this->name;
     }
 
-    /**
-     * @param UUID $uuid
-     * @return void
-     */
-    public function setId(UUID $uuid): void
-    {
-        $this->uuid = $uuid;
-    }
 
     /**
      * @return string
@@ -44,51 +38,56 @@ class User
         return $this->uuid;
     }
 
-
-    /**
-     * @return string
-     */
-    public function getFirstName(): string
-    {
-        return $this->name->first();
-    }
-
-    /**
-     * @param Name $name
-     * @return void
-     */
-    public function setName(Name $name): void
-    {
-        $this->name = $name;
-    }
-
-    /**
-     * @return string
-     */
-    public function getLastName(): string
-    {
-        return $this->name->last();
-    }
-
-    /**
-     * @return string
-     */
     public function username(): string
     {
         return $this->username;
     }
 
-    /**
-     * @param string $userName
-     */
-    public function setUserName(string $userName): void
+    public function hashedPassword(): string
     {
-        $this->username = $userName;
+        return $this->hashedPassword;
     }
 
+    public function checkPassword(string $password): bool {
+        return $this->hashedPassword === self::hash($password, $this->uuid);
+    }
 
     public function name(): string {
-       return $this->name;
+        return $this->name;
     }
+
+    public function getFirstName(): string
+    {
+        return $this->name->first();
+    }
+
+
+    public function getLastName(): string
+    {
+        return $this->name->last();
+    }
+
+    public static function createFrom(
+        string $username,
+        string $password,
+        Name $name
+    ): self
+    {
+        $uuid = UUID::random();
+        return new self(
+            $uuid,
+            $username,
+            self::hash($password,$uuid),
+            $name
+        );
+    }
+
+    private static function hash (string $password, UUID $uuid): string {
+        return hash('sha256',$password . $uuid );
+    }
+
+
+
+
 
 }

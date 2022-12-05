@@ -8,6 +8,7 @@ use Project\Api\Http\Actions\Posts\CreatePosts;
 use Project\Api\Http\Actions\Posts\DeletePost;
 use Project\Api\Http\Actions\Users\CreateUser;
 use Project\Api\Http\Actions\Users\FindByUserName;
+use Project\Api\Http\Auth\LogIn;
 use Project\Api\Http\ErrorResponse;
 use Project\Api\Http\Request;
 use Psr\Log\LoggerInterface;
@@ -45,6 +46,7 @@ $routes = [
         '/posts' => DeletePost::class
     ],
     'POST' => [
+        '/login' => LogIn::class,
         '/posts/create' => CreatePosts::class,
         '/posts/like' => AddLikeToPost::class,
         '/users/create' => CreateUser::class,

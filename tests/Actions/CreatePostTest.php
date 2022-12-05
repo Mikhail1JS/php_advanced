@@ -179,6 +179,7 @@ class CreatePostTest extends TestCase
                 return new User (
                     new UUID('69265fe0-6ba4-43b4-85bc-bcedeb31e6ba'),
                     'Fire92',
+                    'password',
                     new Name("John", 'Black')
                 );
             }

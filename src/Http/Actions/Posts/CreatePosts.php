@@ -8,7 +8,7 @@ use Project\Api\Blog\Post;
 use Project\Api\Blog\Repositories\PostsRepositories\PostsRepositoryInterface;
 use Project\Api\Blog\UUID;
 use Project\Api\Http\Actions\ActionInterface;
-use Project\Api\Http\Auth\IdentificationInterface;
+use Project\Api\Http\Auth\TokenAuthenticationInterface;
 use Project\Api\Http\ErrorResponse;
 use Project\Api\Http\Request;
 use Project\Api\Http\Response;
@@ -19,8 +19,8 @@ class CreatePosts implements ActionInterface
 {
     public function __construct(
         private PostsRepositoryInterface $postsRepository,
-        private IdentificationInterface  $identification,
-        private LoggerInterface          $logger
+        private TokenAuthenticationInterface $authentication,
+        private LoggerInterface $logger
     )
     {
     }
@@ -28,7 +28,7 @@ class CreatePosts implements ActionInterface
     public function handle(Request $request): Response
     {
         try {
-            $author = $this->identification->user($request);
+            $author = $this->authentication->user($request);
         } catch (AuthException $e) {
             return new ErrorResponse($e->getMessage());
         }
