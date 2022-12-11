@@ -9,6 +9,7 @@ use Project\Api\Http\Actions\Posts\DeletePost;
 use Project\Api\Http\Actions\Users\CreateUser;
 use Project\Api\Http\Actions\Users\FindByUserName;
 use Project\Api\Http\Auth\LogIn;
+use Project\Api\Http\Auth\LogOut;
 use Project\Api\Http\ErrorResponse;
 use Project\Api\Http\Request;
 use Psr\Log\LoggerInterface;
@@ -47,6 +48,7 @@ $routes = [
     ],
     'POST' => [
         '/login' => LogIn::class,
+        '/logout' => LogOut::class,
         '/posts/create' => CreatePosts::class,
         '/posts/like' => AddLikeToPost::class,
         '/users/create' => CreateUser::class,
@@ -69,7 +71,7 @@ $actionClassName = $routes[$method][$path];
 try {
     $action = $container->get($actionClassName);
     $response = $action->handle($request);
-}catch (AppException $e){
+}catch (Exception|AppException $e){
     $logger->error($e->getMessage(), ['exception' => $e])
     (new ErrorResponse($e->getMessage()))->send();
     return;

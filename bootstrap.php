@@ -17,7 +17,6 @@ use Project\Api\Blog\Repositories\UsersRepositories\SqliteUsersRepository;
 use Project\Api\Blog\Repositories\UsersRepositories\UsersRepositoryInterface;
 use Project\Api\Http\Auth\AuthenticationInterface;
 use Project\Api\Http\Auth\BearerTokenAuthentication;
-use Project\Api\Http\Auth\IdentificationInterface;
 use Project\Api\Http\Auth\JsonBodyUuidIdentification;
 use Project\Api\Http\Auth\PasswordAuthentication;
 use Project\Api\Http\Auth\PasswordAuthenticationInterface;
