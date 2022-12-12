@@ -1,33 +1,28 @@
 <?php
 
-use Project\Api\Blog\Commands\Arguments;
-use Project\Api\Blog\Commands\CreateUserCommand;
-use Project\Api\Blog\Exceptions\AppException;
-use Psr\Log\LoggerInterface;
+use Project\Api\Blog\Commands\CreateUser;
+use Project\Api\Blog\Commands\FakeData\PopulateDB;
+use Project\Api\Blog\Commands\Posts\DeletePost;
+use Project\Api\Blog\Commands\Users\UpdateUser;
+use Symfony\Component\Console\Application;
 
+$container = require __DIR__ . '/bootstrap.php';
 
-//spl_autoload_register('load');
-//
-//function load ($classname)
-//{
-//
-//    $file = str_replace('_',DIRECTORY_SEPARATOR,$classname) . "InvalidArgumentException.php";
-//    $file = str_replace(['\\','Project\Api'], [DIRECTORY_SEPARATOR,'src'],$file);
-//
-//    if(file_exists($file)){
-//        require $file;
-//    }
-//}
+$application = new Application();
 
-$container = require __DIR__.'/bootstrap.php';
+$commandClasses = [
+    CreateUser::class,
+    DeletePost::class,
+    UpdateUser::class,
+    PopulateDB::class
+];
 
-
-$command = $container->get(CreateUserCommand::class);
-$logger =  $container->get(LoggerInterface::class);
-
-
-try {
-    $command->handle(Arguments::fromArgv($argv));
-}catch(AppException $e){
-   $logger->error($e->getMessage(),['exception' => $e] );
+foreach ($commandClasses as $commandClass) {
+    $command = $container->get($commandClass);
+    $application->add($command);
 }
+
+$application->run();
+
+
+

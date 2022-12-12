@@ -3,10 +3,12 @@
 namespace Project\Api\Blog\Repositories\PostsRepositories;
 
 use PDO;
+use PDOException;
 use PDOStatement;
 use Project\Api\Blog\Exceptions\CommentNotFoundException;
 use Project\Api\Blog\Exceptions\InvalidArgumentException;
 use Project\Api\Blog\Exceptions\PostNotFoundException;
+use Project\Api\Blog\Exceptions\PostRepositoryException;
 use Project\Api\Blog\Exceptions\UserNotFoundException;
 use Project\Api\Blog\Post;
 use Project\Api\Blog\Repositories\UsersRepositories\SqliteUsersRepository;
@@ -31,27 +33,34 @@ class SqlitePostsRepository implements PostsRepositoryInterface
         $statement->execute([
             ':uuid' => $post->uuid(),
             ':author_uuid' => $post->getAuthorUuid(),
-            ':title' => $post->getTitle(),
+            ':title' => $post->title(),
             ':text' => $post->getText()
         ]);
     }
 
     /**
      * @throws PostNotFoundException
+     * @throws PostRepositoryException
      */
     public function delete(UUID $uuid): void {
 
-        $statement = $this->connection->prepare(
-            'DELETE from posts WHERE uuid = :uuid'
-        );
+        try{
+            $statement = $this->connection->prepare(
+                'DELETE from posts WHERE uuid = :uuid'
+            );
 
-       $statement->execute([
-           ':uuid' => $uuid
-        ]);
-
-        if($statement->rowCount() < 1) {
-            throw new PostNotFoundException('No post with such uuid');
+            $statement->execute([
+                ':uuid' => (string)$uuid
+            ]);
+            if($statement->rowCount() < 1) {
+                throw new PostNotFoundException('No post with such uuid');
+            }
+        }catch (PDOException | PostNotFoundException $e){
+            throw new PostRepositoryException(
+                $e->getMessage(),(int)$e->getCode(), $e
+            );
         }
+
     }
 
 
@@ -59,16 +68,26 @@ class SqlitePostsRepository implements PostsRepositoryInterface
      * @throws InvalidArgumentException
      * @throws UserNotFoundException
      * @throws PostNotFoundException
+     * @throws PostRepositoryException
      */
     public function get(UUID $uuid): Post{
-        $statement = $this->connection->prepare(
-            'SELECT * FROM posts WHERE uuid = :uuid '
-        );
 
-        $statement->execute([
-            ':uuid'=> $uuid
-        ]);
-        return $this->getPost($statement,$uuid);
+        try {
+            $statement = $this->connection->prepare(
+                'SELECT * FROM posts WHERE uuid = :uuid '
+            );
+
+            $statement->execute([
+                ':uuid'=> $uuid
+            ]);
+            return $this->getPost($statement,$uuid);
+
+        }catch (PDOException $e){
+            throw new PostRepositoryException(
+                $e->getMessage(),(int)$e->getCode(), $e
+            );
+        }
+
     }
 
     /**

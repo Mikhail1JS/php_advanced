@@ -16,15 +16,32 @@ class SqliteUsersRepository implements UsersRepositoryInterface
     public function __construct(
         private PDO $connection
     )
-    {}
+    {
+    }
 
     /**
      * @throws AlreadyRegisteredException
      */
-    public function save(User $user):void{
+    public function save(User $user): void
+    {
 
         $statement = $this->connection->prepare(
-            'INSERT INTO users (uuid , username , password, first_name , last_name) VALUES (:uuid , :username , :password, :first_name , :last_name)'
+            'INSERT INTO users (
+                   uuid , 
+                   username , 
+                   password, 
+                   first_name , 
+                   last_name) 
+                            VALUES (
+                                    :uuid , 
+                                    :username , 
+                                    :password, 
+                                    :first_name , 
+                                    :last_name
+                                    )
+                            ON CONFLICT (uuid) DO UPDATE SET
+                            first_name = :first_name,
+                            last_name = :last_name'
         );
 
         $result = $statement->execute([
@@ -47,15 +64,16 @@ class SqliteUsersRepository implements UsersRepositoryInterface
      * @throws InvalidArgumentException
      * @throws UserNotFoundException
      */
-    public function get(UUID $uuid): User{
+    public function get(UUID $uuid): User
+    {
         $statement = $this->connection->prepare(
             'SELECT * FROM users WHERE uuid = :uuid '
         );
 
         $statement->execute([
-            ':uuid'=> $uuid
+            ':uuid' => $uuid
         ]);
-        return $this->getUser($statement,$uuid);
+        return $this->getUser($statement, $uuid);
     }
 
     /**
@@ -67,10 +85,10 @@ class SqliteUsersRepository implements UsersRepositoryInterface
             'SELECT * FROM users WHERE username = :username');
 
         $statement->execute([
-            ':username'=>$username
+            ':username' => $username
         ]);
 
-        return $this->getUser($statement,$username);
+        return $this->getUser($statement, $username);
     }
 
     /**
@@ -80,7 +98,7 @@ class SqliteUsersRepository implements UsersRepositoryInterface
     {
         $result = $statement->fetch(PDO::FETCH_ASSOC);
 
-        if($result === false){
+        if ($result === false) {
             throw new UserNotFoundException(
                 "Cannot get user: $value"
             );

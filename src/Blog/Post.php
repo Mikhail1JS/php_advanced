@@ -23,7 +23,7 @@ class Post
 
     public function __toString():string
     {
-        return "User with id {$this->getAuthorUuid()} wrote post:\n id - {$this->uuid()};\n title-{$this->getTitle()};\n text-{$this->getText()} ";
+        return "User with id {$this->getAuthorUuid()} wrote post:\n id - {$this->uuid()};\n title-{$this->title()};\n text-{$this->getText()} ";
     }
 
 
@@ -50,7 +50,7 @@ class Post
     /**
      * @return string
      */
-    public function getTitle():string {
+    public function title():string {
         return $this->title;
     }
 
